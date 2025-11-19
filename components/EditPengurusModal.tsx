@@ -4,7 +4,19 @@ import { useState } from "react"
 import { Input } from "./ui/input"
 import { Eye, EyeOff } from "lucide-react"
 
-export default function EditPengurusModal({ pengurus, onClose }) {
+interface Pengurus {
+  id: number
+  name: string
+  email: string
+  role: string
+}
+
+interface EditPengurusModalProps {
+  pengurus: Pengurus
+  onClose: () => void
+}
+
+export default function EditPengurusModal({ pengurus, onClose }: EditPengurusModalProps) {
   const [name, setName] = useState(pengurus.name)
   const [email, setEmail] = useState(pengurus.email)
   const [password, setPassword] = useState("")
@@ -16,7 +28,6 @@ export default function EditPengurusModal({ pengurus, onClose }) {
 
     const payload: any = { name, email }
     
-    // Hanya kirim password jika diisi
     if (password.trim() !== "") {
       payload.password = password
     }
