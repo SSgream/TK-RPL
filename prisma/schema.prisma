@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int        @id @default(autoincrement())
+  name     String
+  email    String     @unique
+  password String
+  role     String     @default("pengurus")
+  posts    Post[]
+  ukms     UKM[]
+  kegiatan Kegiatan[]
+}
+
+model UKM {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  category    String
+  imageUrl    String?
+  verified    Boolean  @default(false)
+  createdBy   Int
+  createdAt   DateTime @default(now())
+
+  user     User       @relation(fields: [createdBy], references: [id])
+  posts    Post[]
+  kegiatan Kegiatan[] // ✅ relasi balik ke Kegiatan
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content String @db.Text
+  imageUrl String? @db.Text
+  createdAt DateTime @default(now())
+  ukmId     Int?
+  authorId  Int?
+
+  ukm    UKM?  @relation(fields: [ukmId], references: [id])
+  author User? @relation(fields: [authorId], references: [id])
+}
+
+model Kegiatan {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  ukmId     Int?
+  authorId  Int?
+
+  ukm    UKM?  @relation(fields: [ukmId], references: [id])
+  author User? @relation(fields: [authorId], references: [id])
+}
